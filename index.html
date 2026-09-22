@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tarefas das Comissões — FME Aracruz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --surface-2:#eef1ee; --ink:#1c2622; --muted:#5b6862; --line:#d8ddd9;
+  --accent:#1f5c4a; --accent-ink:#ffffff; --accent-soft:#dcebe5;
+  --ok:#2e7d4f; --ok-soft:#e1f1e7; --warn:#a15c00; --warn-soft:#fbeed8; --bad:#b3261e; --bad-soft:#fbe3e1; --info:#2f5aa8; --info-soft:#e2eaf8; --idle:#6a716e; --idle-soft:#eceeed;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121715; --surface:#1a211e; --surface-2:#222b27; --ink:#e6ece9; --muted:#9aa8a1; --line:#2f3a35;
+  --accent:#6fc2a5; --accent-ink:#0f1a16; --accent-soft:#1f3a31;
+  --ok:#7dd3a0; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3a2c14; --bad:#f28b82; --bad-soft:#3d1f1d; --info:#9bb8f0; --info-soft:#1e2a44; --idle:#a3aca8; --idle-soft:#262e2b;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#121715; --surface:#1a211e; --surface-2:#222b27; --ink:#e6ece9; --muted:#9aa8a1; --line:#2f3a35;
+  --accent:#6fc2a5; --accent-ink:#0f1a16; --accent-soft:#1f3a31;
+  --ok:#7dd3a0; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3a2c14; --bad:#f28b82; --bad-soft:#3d1f1d; --info:#9bb8f0; --info-soft:#1e2a44; --idle:#a3aca8; --idle-soft:#262e2b;
+  color-scheme:dark;}
+*{box-sizing:border-box} [hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;padding:0 16px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+header .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font:700 clamp(24px,3.4vw,32px)/1.15 "Source Serif 4",Georgia,serif;margin:4px 0 6px;text-wrap:balance}
+h2{font:600 19px/1.25 "Source Serif 4",Georgia,serif;margin:0}
+header p{margin:0;color:var(--muted);max-width:70ch}
+button,select,input,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:6px;cursor:pointer;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.notice{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn);border-radius:8px;padding:10px 14px;font-size:14px}
+.notice.src{background:var(--surface-2);border-color:var(--line)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.card .sig{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+.card .nm{font-weight:600;line-height:1.3}
+.card .coord{font-size:13px;color:var(--muted)}
+.meter{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--idle-soft)}
+.meter span{display:block;height:100%}
+.counts{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.counts b{color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters select,.filters input[type=search]{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 10px;min-width:0}
+.filters input[type=search]{flex:1 1 220px}
+.filters label.chk{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--muted)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:860px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--surface-2);position:sticky;top:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+td.id{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;white-space:nowrap}
+td .t{font-weight:600}
+td .b{font-size:12.5px;color:var(--muted);margin-top:2px}
+td.date{white-space:nowrap;font-variant-numeric:tabular-nums}
+.late{color:var(--bad);font-weight:700}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.s-nao{background:var(--idle-soft);color:var(--idle)} .s-and{background:var(--info-soft);color:var(--info)}
+.s-agu{background:var(--warn-soft);color:var(--warn)} .s-con{background:var(--ok-soft);color:var(--ok)} .s-can{background:var(--surface-2);color:var(--muted);text-decoration:line-through}
+.p-Alta{color:var(--bad)} .p-Média{color:var(--warn)} .p-Baixa{color:var(--muted)}
+.tag{font-size:11.5px;color:var(--muted);border:1px dashed var(--line);border-radius:4px;padding:0 5px;margin-left:6px;white-space:nowrap}
+.sigtag{font-size:12px;font-weight:700;color:var(--accent)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.foot{font-size:13px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:10px;padding:0;background:var(--surface);color:var(--ink);width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(10,20,16,.45)}
+form.ed{display:flex;flex-direction:column;gap:12px;padding:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:13px;font-weight:600;color:var(--muted)}
+.fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:8px 10px;width:100%}
+.fld textarea{min-height:72px;resize:vertical}
+.dlg-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding-top:6px}
+.dlg-actions .right{display:flex;gap:8px}
+.btn.danger{color:var(--bad);border-color:var(--bad-soft)}
+.btn.danger.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+.comms{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.comms .card textarea,.comms .card input{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:8px 10px;width:100%}
+.comms .card textarea{min-height:110px}
+.help{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 20px;max-width:78ch}
+.help ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:6px;font-size:14px;font-weight:600}
+@media (prefers-reduced-motion:no-preference){.toast{transition:opacity .2s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Fórum Municipal de Educação de Aracruz · Coordenadoria Geral</div>
+    <h1>Tarefas das Comissões</h1>
+    <p>Atribuição e acompanhamento das tarefas da Coordenadoria Geral e das Comissões do FME (Regimento Interno, arts. 18 a 22).</p>
+  </header>
+
+  <div id="srcNote" class="notice src"></div>
+  <div id="dirty" class="notice" hidden>
+    <span><strong>Há alterações não publicadas.</strong> Elas estão salvas só neste navegador. Para valerem para todos, baixe o arquivo e substitua <code>dados/tarefas.json</code> no GitHub.</span>
+    <span class="bar"><button class="btn primary" id="btnSave" type="button">Baixar tarefas.json</button><button class="btn ghost" id="btnDiscard" type="button">Descartar alterações</button></span>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="tarefas" aria-selected="true" type="button">Tarefas</button>
+    <button class="tab" role="tab" data-tab="comissoes" aria-selected="false" type="button">Comissões e membros</button>
+    <button class="tab" role="tab" data-tab="ajuda" aria-selected="false" type="button">Como atualizar</button>
+  </nav>
+
+  <section id="tab-tarefas" style="display:flex;flex-direction:column;gap:18px">
+    <div class="summary" id="summary"></div>
+    <div class="filters">
+      <input type="search" id="fBusca" placeholder="Buscar tarefa, responsável ou artigo" aria-label="Buscar">
+      <select id="fCom" aria-label="Comissão"></select>
+      <select id="fStatus" aria-label="Status"></select>
+      <select id="fResp" aria-label="Responsável"></select>
+      <label class="chk"><input type="checkbox" id="fConc"> Mostrar concluídas</label>
+      <span style="flex:1"></span>
+      <button class="btn primary" id="btnNew" type="button">+ Nova tarefa</button>
+      <button class="btn" id="btnCsv" type="button">Exportar para Excel (CSV)</button>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>Nº</th><th>Tarefa</th><th>Comissão</th><th>Responsável</th><th>Prioridade</th><th>Status</th><th>Prazo</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="foot" id="foot"></div>
+  </section>
+
+  <section id="tab-comissoes" hidden>
+    <div class="comms" id="comms"></div>
+  </section>
+
+  <section id="tab-ajuda" hidden>
+    <div class="help">
+      <h2>Como atualizar a planilha</h2>
+      <p class="foot" style="margin:6px 0 0">A página é estática (GitHub Pages). A versão oficial é o arquivo <code>dados/tarefas.json</code> do repositório. Edições feitas aqui ficam só no seu navegador até serem publicadas.</p>
+      <ol>
+        <li>Edite as tarefas e comissões nesta página (clique em uma linha para abrir a ficha).</li>
+        <li>Clique em <strong>Baixar tarefas.json</strong>.</li>
+        <li>No GitHub, abra a pasta <code>dados</code> → <em>Add file</em> → <em>Upload files</em>, envie o arquivo baixado e confirme em <em>Commit changes</em>.</li>
+        <li>Em 1 a 2 minutos a página publicada mostra a nova versão para todos.</li>
+      </ol>
+      <p class="foot">Para abrir no Excel, use <strong>Exportar para Excel (CSV)</strong>. Para restaurar um arquivo salvo antes: <button class="btn" id="btnImport" type="button">Importar tarefas.json</button> <input type="file" id="fileImport" accept=".json,application/json" hidden></p>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg">
+  <form class="ed" id="edForm" method="dialog">
+    <h2 id="edTitle">Tarefa</h2>
+    <div class="fld"><label for="eTitulo">Tarefa</label><input id="eTitulo" required></div>
+    <div class="grid2">
+      <div class="fld"><label for="eCom">Comissão</label><select id="eCom"></select></div>
+      <div class="fld"><label for="eResp">Responsável</label><input id="eResp" list="respList" placeholder="Nome ou entidade"></div>
+      <div class="fld"><label for="ePri">Prioridade</label><select id="ePri"><option>Alta</option><option>Média</option><option>Baixa</option></select></div>
+      <div class="fld"><label for="eStatus">Status</label><select id="eStatus"></select></div>
+      <div class="fld"><label for="eIni">Início</label><input type="date" id="eIni"></div>
+      <div class="fld"><label for="ePrazo">Prazo</label><input type="date" id="ePrazo"></div>
+    </div>
+    <div class="fld"><label for="eBase">Base (Regimento, ata, deliberação)</label><input id="eBase"></div>
+    <div class="fld"><label for="eOrig">Origem</label><select id="eOrig"><option>Sugestão do Regimento</option><option>Sugestão da coordenação</option><option>Deliberação da plenária</option><option>Demanda da comissão</option><option>Demanda externa</option></select></div>
+    <div class="fld"><label for="eEnc">Encaminhamentos e observações</label><textarea id="eEnc"></textarea></div>
+    <div class="dlg-actions">
+      <button class="btn danger" id="btnDel" type="button">Excluir tarefa</button>
+      <span class="right"><button class="btn" value="cancel" type="button" id="btnCancel">Cancelar</button><button class="btn primary" id="btnOk" type="submit">Salvar</button></span>
+    </div>
+  </form>
+</dialog>
+<datalist id="respList"></datalist>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const SEED = {"atualizado_em": "2026-09-22", "comissoes": [{"id": "CG", "nome": "Coordenadoria Geral", "base": "Regimento Interno, arts. 16 e 18", "coordenacao": "A definir", "membros": ["Coordenador(a) do FME", "Secretário(a) executivo(a) — a definir"]}, {"id": "CMS", "nome": "Comissão de Monitoramento e Sistematização", "base": "Regimento Interno, arts. 20 e 21", "coordenacao": "A definir", "membros": []}, {"id": "CMD", "nome": "Comissão de Mobilização e Divulgação", "base": "Regimento Interno, arts. 20 e 22", "coordenacao": "A definir", "membros": []}, {"id": "CGES", "nome": "Comissão Gestora", "base": "A confirmar — não consta no Regimento Interno (Portaria SEMED nº 523/2026)", "coordenacao": "A definir", "membros": []}], "tarefas": [{"id": "T01", "titulo": "Receber e organizar ofícios de ingresso de novas entidades no FME", "comissao": "CG", "responsavel": "", "base": "Art. 6º, § 1º (pedidos durante o mês de outubro)", "prioridade": "Alta", "status": "Não iniciada", "inicio": "2026-10-01", "prazo": "2026-10-31", "encaminhamento": "Levar os pedidos recebidos à reunião ordinária seguinte (art. 6º, § 2º).", "origem": "Sugestão do Regimento"}, {"id": "T02", "titulo": "Convocar a reunião ordinária do 2º semestre", "comissao": "CG", "responsavel": "", "base": "Art. 10 e art. 16, I (antecedência mínima de 15 dias, com pauta e documentos)", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "Definir a data da reunião; a convocação sai pelo menos 15 dias antes.", "origem": "Sugestão do Regimento"}, {"id": "T03", "titulo": "Elaborar a pauta com as sugestões enviadas pelos membros", "comissao": "CG", "responsavel": "", "base": "Art. 16, III e art. 13, III", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T04", "titulo": "Submeter as atas das reuniões anteriores à aprovação do Fórum", "comissao": "CG", "responsavel": "", "base": "Art. 16, IV", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T05", "titulo": "Tornar públicas as deliberações do FME", "comissao": "CG", "responsavel": "", "base": "Art. 16, VI", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "Fazer em conjunto com a Comissão de Mobilização e Divulgação.", "origem": "Sugestão do Regimento"}, {"id": "T06", "titulo": "Controlar a frequência das entidades e acionar substituições", "comissao": "CG", "responsavel": "", "base": "Art. 3º, § 3º e art. 6º, § 3º (duas ausências consecutivas)", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T07", "titulo": "Propor à plenária o cronograma de atividades do FME", "comissao": "CG", "responsavel": "", "base": "Art. 13, V e art. 16, V", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T08", "titulo": "Manter atualizado o cadastro do FME no SIMEC (CadFórum)", "comissao": "CG", "responsavel": "", "base": "Manual do CadFórum/SIMEC — conferir exigências e prazos no manual", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão da coordenação"}, {"id": "T09", "titulo": "Monitorar a implementação, a avaliação e a revisão do PME", "comissao": "CMS", "responsavel": "", "base": "Art. 21, a, i", "prioridade": "Alta", "status": "Em andamento", "inicio": "", "prazo": "", "encaminhamento": "Inclui a aferição do PME 2015–2025.", "origem": "Sugestão do Regimento"}, {"id": "T10", "titulo": "Acompanhar a tramitação dos planos decenais de educação (PME 2027–2037)", "comissao": "CMS", "responsavel": "", "base": "Art. 21, d, iii e art. 1º, II", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T11", "titulo": "Acompanhar os indicadores da educação básica e superior e seus indicadores de qualidade", "comissao": "CMS", "responsavel": "", "base": "Art. 21, b, i e ii", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T12", "titulo": "Acompanhar os indicadores de equidade educacional", "comissao": "CMS", "responsavel": "", "base": "Art. 21, b, iii (renda, etnia, gênero, geracional, deficiência, campo/cidade)", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T13", "titulo": "Articular-se com observatórios e órgãos de pesquisa de indicadores educacionais", "comissao": "CMS", "responsavel": "", "base": "Art. 21, c", "prioridade": "Baixa", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T14", "titulo": "Definir o temário e sistematizar o conteúdo da próxima COMEA", "comissao": "CMS", "responsavel": "", "base": "Art. 21, d, i", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T15", "titulo": "Elaborar a proposta de Regimento Interno da próxima COMEA", "comissao": "CMS", "responsavel": "", "base": "Art. 21, e, i e ii", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T16", "titulo": "Definir forma, conteúdo, acessibilidade e periodicidade das publicações do FME", "comissao": "CMS", "responsavel": "", "base": "Art. 21, f, i a iii (inclui plano de distribuição)", "prioridade": "Baixa", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T17", "titulo": "Elaborar orientações para a organização das reuniões do FME", "comissao": "CMD", "responsavel": "", "base": "Art. 22, a, i", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T18", "titulo": "Mobilizar a comunidade local para participar do FME e da COMEA", "comissao": "CMD", "responsavel": "", "base": "Art. 22, a e a, iii", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T19", "titulo": "Elaborar orientações para a organização da COMEA", "comissao": "CMD", "responsavel": "", "base": "Art. 22, a, ii", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T20", "titulo": "Planejar e acompanhar a logística da próxima COMEA", "comissao": "CMD", "responsavel": "", "base": "Art. 22, b, ii", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T21", "titulo": "Propor formas de suporte técnico e apoio financeiro ao FME e à COMEA", "comissao": "CMD", "responsavel": "", "base": "Art. 22, b, i", "prioridade": "Média", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T22", "titulo": "Organizar a elaboração e o arquivo das atas do FME", "comissao": "CMD", "responsavel": "", "base": "Art. 22, b, iii", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T23", "titulo": "Acompanhar a publicação de portarias sobre o FME", "comissao": "CMD", "responsavel": "", "base": "Art. 22, c", "prioridade": "Baixa", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T24", "titulo": "Avaliar a execução da cooperação técnica e financeira do município", "comissao": "CMD", "responsavel": "", "base": "Art. 22, c, ii", "prioridade": "Baixa", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "", "origem": "Sugestão do Regimento"}, {"id": "T25", "titulo": "Registrar o ato de criação, a composição e as atribuições da Comissão Gestora", "comissao": "CGES", "responsavel": "", "base": "Informar o ato (portaria/deliberação) que institui a Comissão", "prioridade": "Alta", "status": "Não iniciada", "inicio": "", "prazo": "", "encaminhamento": "Com as atribuições definidas, lançar aqui as tarefas da Comissão.", "origem": "Sugestão da coordenação"}]};
+const STATUS = ["Não iniciada","Em andamento","Aguardando","Concluída","Cancelada"];
+const SCLS = {"Não iniciada":"s-nao","Em andamento":"s-and","Aguardando":"s-agu","Concluída":"s-con","Cancelada":"s-can"};
+const SCOL = {"Não iniciada":"var(--idle)","Em andamento":"var(--info)","Aguardando":"var(--warn)","Concluída":"var(--ok)","Cancelada":"var(--line)"};
+const LS = "fme-aracruz-tarefas-rascunho";
+let official = null, data = null, editing = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const fmt = d => d ? d.split("-").reverse().join("/") : "—";
+const isLate = t => t.prazo && t.prazo < today() && !["Concluída","Cancelada"].includes(t.status);
+const comName = id => (data.comissoes.find(c => c.id === id) || {}).nome || id;
+
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600);}
+function saveDraft(){try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} $("#dirty").hidden = JSON.stringify(data)===JSON.stringify(official);}
+function loadDraft(){try{const r=localStorage.getItem(LS);return r?JSON.parse(r):null;}catch(e){return null;}}
+
+async function boot(){
+  let src = "repositório";
+  try{const r = await fetch("dados/tarefas.json",{cache:"no-store"}); if(!r.ok) throw 0; official = await r.json();}
+  catch(e){official = SEED; src = "cópia embutida na página (arquivo aberto localmente)";}
+  const d = loadDraft();
+  data = d ? d : structuredClone(official);
+  $("#srcNote").innerHTML = `<span>Versão oficial: <strong>${esc(src)}</strong>, atualizada em <strong>${fmt(official.atualizado_em)}</strong>. Tarefas com a marca <span class="tag">sugestão</span> vieram do Regimento e aguardam validação da plenária.</span>`;
+  fillSelects(); render(); saveDraft();
+}
+
+function fillSelects(){
+  const coms = data.comissoes.map(c=>`<option value="${esc(c.id)}">${esc(c.id)} — ${esc(c.nome)}</option>`).join("");
+  $("#fCom").innerHTML = `<option value="">Todas as comissões</option>`+coms;
+  $("#eCom").innerHTML = coms;
+  $("#fStatus").innerHTML = `<option value="">Todos os status</option><option value="__late">Atrasadas</option>`+STATUS.map(s=>`<option>${s}</option>`).join("");
+  $("#eStatus").innerHTML = STATUS.map(s=>`<option>${s}</option>`).join("");
+  const resp = [...new Set([...data.tarefas.map(t=>t.responsavel), ...data.comissoes.flatMap(c=>[c.coordenacao,...c.membros])].filter(x=>x && x!=="A definir"))].sort();
+  const cur = $("#fResp").value;
+  $("#fResp").innerHTML = `<option value="">Todos os responsáveis</option><option value="__none">Sem responsável</option>`+resp.map(r=>`<option>${esc(r)}</option>`).join("");
+  $("#fResp").value = cur;
+  $("#respList").innerHTML = resp.map(r=>`<option value="${esc(r)}">`).join("");
+}
+
+function render(){
+  // resumo
+  $("#summary").innerHTML = data.comissoes.map(c=>{
+    const ts = data.tarefas.filter(t=>t.comissao===c.id && t.status!=="Cancelada");
+    const n = ts.length || 1;
+    const by = s => ts.filter(t=>t.status===s).length;
+    const late = ts.filter(isLate).length, semResp = ts.filter(t=>!t.responsavel && t.status!=="Concluída").length;
+    const seg = ["Concluída","Em andamento","Aguardando","Não iniciada"].map(s=>`<span style="width:${by(s)/n*100}%;background:${SCOL[s]}" title="${s}: ${by(s)}"></span>`).join("");
+    return `<div class="card"><div><div class="sig">${esc(c.id)}</div><div class="nm">${esc(c.nome)}</div><div class="coord">Coordenação: ${esc(c.coordenacao||"A definir")}</div></div>
+      <div class="meter" role="img" aria-label="${by("Concluída")} de ${ts.length} concluídas">${seg}</div>
+      <div class="counts"><span><b>${ts.length}</b> tarefas</span><span><b>${by("Concluída")}</b> concluídas</span><span><b>${by("Em andamento")}</b> em andamento</span>${late?`<span class="late">${late} atrasada${late>1?"s":""}</span>`:""}${semResp?`<span><b>${semResp}</b> sem responsável</span>`:""}</div></div>`;
+  }).join("");
+  // tabela
+  const q = $("#fBusca").value.trim().toLowerCase(), fc=$("#fCom").value, fs=$("#fStatus").value, fr=$("#fResp").value, sc=$("#fConc").checked;
+  const pri = {Alta:0,"Média":1,Baixa:2};
+  const list = data.tarefas.filter(t=>{
+    if(!sc && ["Concluída","Cancelada"].includes(t.status) && fs!==t.status) return false;
+    if(fc && t.comissao!==fc) return false;
+    if(fs==="__late" ? !isLate(t) : (fs && t.status!==fs)) return false;
+    if(fr==="__none" ? !!t.responsavel : (fr && t.responsavel!==fr)) return false;
+    if(q && ![t.titulo,t.responsavel,t.base,t.encaminhamento,t.id].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b)=> (isLate(b)-isLate(a)) || ((a.prazo||"9999")<(b.prazo||"9999")?-1:(a.prazo||"9999")>(b.prazo||"9999")?1:0) || pri[a.prioridade]-pri[b.prioridade] || a.id.localeCompare(b.id));
+  $("#rows").innerHTML = list.length ? list.map(t=>`<tr tabindex="0" data-id="${esc(t.id)}" class="row">
+    <td class="id">${esc(t.id)}</td>
+    <td><div class="t">${esc(t.titulo)}${t.origem==="Sugestão do Regimento"?'<span class="tag">sugestão</span>':""}</div><div class="b">${esc(t.base)}</div></td>
+    <td><span class="sigtag" title="${esc(comName(t.comissao))}">${esc(t.comissao)}</span></td>
+    <td>${t.responsavel?esc(t.responsavel):'<span class="foot">A definir</span>'}</td>
+    <td><span class="p-${esc(t.prioridade)}">${esc(t.prioridade)}</span></td>
+    <td><span class="pill ${SCLS[t.status]||""}">${esc(t.status)}</span></td>
+    <td class="date ${isLate(t)?"late":""}">${fmt(t.prazo)}${isLate(t)?"<br>atrasada":""}</td></tr>`).join("")
+    : `<tr><td colspan="7" class="empty">Nenhuma tarefa com esses filtros.</td></tr>`;
+  $("#foot").textContent = `${list.length} de ${data.tarefas.length} tarefas exibidas.`;
+  renderComms();
+}
+
+function renderComms(){
+  $("#comms").innerHTML = data.comissoes.map((c,i)=>`<div class="card">
+    <div><div class="sig">${esc(c.id)}</div><div class="nm">${esc(c.nome)}</div><div class="coord">${esc(c.base)}</div></div>
+    <div class="fld"><label for="cc${i}">Coordenação</label><input id="cc${i}" data-i="${i}" data-k="coordenacao" value="${esc(c.coordenacao)}"></div>
+    <div class="fld"><label for="cm${i}">Membros (um por linha: nome — entidade)</label><textarea id="cm${i}" data-i="${i}" data-k="membros">${esc(c.membros.join("\n"))}</textarea></div>
+  </div>`).join("");
+}
+$("#comms").addEventListener("change", e=>{
+  const el=e.target, i=+el.dataset.i, k=el.dataset.k; if(isNaN(i)) return;
+  data.comissoes[i][k] = k==="membros" ? el.value.split("\n").map(s=>s.trim()).filter(Boolean) : el.value.trim();
+  saveDraft(); fillSelects(); render(); toast("Comissão atualizada");
+});
+
+function openTask(id){
+  const t = id ? data.tarefas.find(x=>x.id===id) : null; editing = t ? t.id : null;
+  $("#edTitle").textContent = t ? `Tarefa ${t.id}` : "Nova tarefa";
+  $("#eTitulo").value=t?.titulo||""; $("#eCom").value=t?.comissao||$("#fCom").value||data.comissoes[0].id;
+  $("#eResp").value=t?.responsavel||""; $("#ePri").value=t?.prioridade||"Média"; $("#eStatus").value=t?.status||"Não iniciada";
+  $("#eIni").value=t?.inicio||""; $("#ePrazo").value=t?.prazo||""; $("#eBase").value=t?.base||"";
+  $("#eOrig").value=t?.origem||"Deliberação da plenária"; $("#eEnc").value=t?.encaminhamento||"";
+  const del=$("#btnDel"); del.hidden=!t; del.classList.remove("armed"); del.textContent="Excluir tarefa";
+  $("#dlg").showModal();
+}
+function nextId(){const n=Math.max(0,...data.tarefas.map(t=>parseInt(t.id.replace(/\D/g,""))||0))+1;return "T"+String(n).padStart(2,"0");}
+$("#edForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const v = {titulo:$("#eTitulo").value.trim(),comissao:$("#eCom").value,responsavel:$("#eResp").value.trim(),prioridade:$("#ePri").value,status:$("#eStatus").value,inicio:$("#eIni").value,prazo:$("#ePrazo").value,base:$("#eBase").value.trim(),origem:$("#eOrig").value,encaminhamento:$("#eEnc").value.trim()};
+  if(!v.titulo){ $("#eTitulo").focus(); return; }
+  if(editing){ Object.assign(data.tarefas.find(t=>t.id===editing), v); toast("Tarefa salva"); }
+  else { data.tarefas.push({id:nextId(),...v}); toast("Tarefa criada"); }
+  $("#dlg").close(); saveDraft(); fillSelects(); render();
+});
+$("#btnCancel").onclick = ()=>$("#dlg").close();
+$("#btnDel").onclick = e=>{
+  const b=e.currentTarget;
+  if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="Clique de novo para confirmar";return;}
+  data.tarefas = data.tarefas.filter(t=>t.id!==editing); $("#dlg").close(); saveDraft(); fillSelects(); render(); toast("Tarefa excluída");
+};
+$("#rows").addEventListener("click", e=>{const r=e.target.closest("tr[data-id]"); if(r) openTask(r.dataset.id);});
+$("#rows").addEventListener("keydown", e=>{if(e.key==="Enter"){const r=e.target.closest("tr[data-id]"); if(r) openTask(r.dataset.id);}});
+$("#btnNew").onclick = ()=>openTask(null);
+["#fBusca","#fCom","#fStatus","#fResp","#fConc"].forEach(s=>$(s).addEventListener("input",render));
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["tarefas","comissoes","ajuda"].forEach(k=>$("#tab-"+k).hidden = k!==b.dataset.tab);
+});
+
+function download(name, text, type){
+  const url = URL.createObjectURL(new Blob([text],{type})); const a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("#btnSave").onclick = ()=>{ data.atualizado_em = today(); saveDraft(); download("tarefas.json", JSON.stringify(data,null,2), "application/json"); toast("Arquivo baixado — envie para dados/ no GitHub"); };
+$("#btnDiscard").onclick = e=>{
+  const b=e.currentTarget;
+  if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent="Confirmar descarte";setTimeout(()=>{b.dataset.armed="";b.textContent="Descartar alterações";},4000);return;}
+  try{localStorage.removeItem(LS);}catch(err){} data=structuredClone(official); b.dataset.armed=""; b.textContent="Descartar alterações"; fillSelects(); render(); saveDraft(); toast("Alterações descartadas");
+};
+$("#btnCsv").onclick = ()=>{
+  const cols=[["id","Nº"],["titulo","Tarefa"],["comissao","Comissão"],["responsavel","Responsável"],["prioridade","Prioridade"],["status","Status"],["inicio","Início"],["prazo","Prazo"],["base","Base"],["origem","Origem"],["encaminhamento","Encaminhamentos"]];
+  const cell=(k,v)=>{v = (k==="inicio"||k==="prazo")? (v?fmt(v):"") : (k==="comissao"? comName(v) : v); return '"'+String(v??"").replace(/"/g,'""')+'"';};
+  const csv = "﻿"+[cols.map(c=>c[1]).join(";"), ...data.tarefas.map(t=>cols.map(([k])=>cell(k,t[k])).join(";"))].join("\r\n");
+  download(`tarefas-fme-${today()}.csv`, csv, "text/csv;charset=utf-8");
+};
+$("#btnImport").onclick = ()=>$("#fileImport").click();
+$("#fileImport").onchange = async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{const d=JSON.parse(await f.text()); if(!Array.isArray(d.tarefas)||!Array.isArray(d.comissoes)) throw 0; data=d; saveDraft(); fillSelects(); render(); toast("Arquivo importado");}
+  catch(err){toast("Arquivo inválido: use um tarefas.json baixado desta página");}
+  e.target.value="";
+};
+boot();
+</script>
+</body>
+</html>
